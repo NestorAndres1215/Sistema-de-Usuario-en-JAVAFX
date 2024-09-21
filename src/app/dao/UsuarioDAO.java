@@ -146,7 +146,50 @@ public class UsuarioDAO {
     }
 
     public void eliminarUsuario(String codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "DELETE FROM usuarios WHERE codigo = ?";
+
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, codigo);
+            pstmt.executeUpdate();
+            System.out.println("Usuario eliminado exitosamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al eliminar usuario: " + e.getMessage());
+        }
+    }
+
+    public void actualizarUsuario(Usuario usuarioSeleccionado) {
+        String sql = "UPDATE usuarios SET nombre = ?, apellido = ?, username = ?, correo = ?, telefono = ?, direccion = ?, fecha_nacimiento = ? WHERE codigo = ?";
+
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Establecer los valores para la consulta
+            pstmt.setString(1, usuarioSeleccionado.getNombre());
+            pstmt.setString(2, usuarioSeleccionado.getApellido());
+            pstmt.setString(3, usuarioSeleccionado.getUsername());
+            pstmt.setString(4, usuarioSeleccionado.getCorreo());
+            pstmt.setString(5, usuarioSeleccionado.getTelefono());
+            pstmt.setString(6, usuarioSeleccionado.getDireccion());
+            pstmt.setString(7, usuarioSeleccionado.getFechaNacimiento());
+            pstmt.setString(8, usuarioSeleccionado.getCodigo()); // Se actualiza en base al código
+
+            // Ejecutar la actualización
+            int filasActualizadas = pstmt.executeUpdate();
+
+            if (filasActualizadas > 0) {
+                System.out.println("Usuario actualizado exitosamente.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al actualizar usuario: " + e.getMessage());
+        } 
+
+    
+        
     }
 
 }
